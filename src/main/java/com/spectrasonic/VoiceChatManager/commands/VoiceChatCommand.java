@@ -30,21 +30,29 @@ public class VoiceChatCommand extends BaseCommand {
         this.luckPerms = plugin.getLuckPermsApi();
     }
 
-    @Default
+    @Subcommand("mute")
     @CommandPermission("voicechat.manage")
-    @Syntax("<mute|unmute> <all|*>")
-    @Description("Mute or unmute voice chat speak permission for the default group")
-    public void onVoiceChat(Player sender, String action, String target) {
-        action = action.toLowerCase();
+    @CommandCompletion("all|*")
+    @Syntax("<target>")
+    @Description("Mutea el permiso de voz para el grupo por defecto. Usa 'all' o '*' como objetivo.")
+    public void onMute(Player sender, String target) {
+        handleVoiceChatAction(sender, "mute", target);
+    }
+
+    @Subcommand("unmute")
+    @CommandPermission("voicechat.manage")
+    @CommandCompletion("all|*")
+    @Syntax("<target>")
+    @Description("Desmutea el permiso de voz para el grupo por defecto. Usa 'all' o '*' como objetivo.")
+    public void onUnmute(Player sender, String target) {
+        handleVoiceChatAction(sender, "unmute", target);
+    }
+
+    private void handleVoiceChatAction(Player sender, String action, String target) {
         target = target.toLowerCase();
 
-        if (!action.equals("mute") && !action.equals("unmute")) {
-            MessageUtils.sendMessage(sender, "<red>Uso incorrecto. Usa /vc <mute|unmute> <all|*>");
-            return;
-        }
-
         if (!target.equals("all") && !target.equals("*")) {
-            MessageUtils.sendMessage(sender, "<red>Uso incorrecto. El target debe ser 'all' o '*'");
+            MessageUtils.sendMessage(sender, "<red>Uso incorrecto. El target debe ser 'all' o '*'.");
             return;
         }
 
@@ -95,5 +103,21 @@ public class VoiceChatCommand extends BaseCommand {
         plugin.getConfigManager().loadConfig();
         plugin.getMessageManager().loadMessages();
         MessageUtils.sendMessage(player, "<green>Configuración Recargada.");
+    }
+@Subcommand("help")
+    @Description("Muestra la ayuda para los comandos de VoiceChat.")
+    public void onHelp(Player sender) {
+        MessageUtils.sendMessage(sender, "<green>Comandos disponibles:");
+        MessageUtils.sendMessage(sender, "<green>/vc mute <all|*> - Mutea el permiso de voz para el grupo por defecto.");
+        MessageUtils.sendMessage(sender, "<green>/vc unmute <all|*> - Desmutea el permiso de voz para el grupo por defecto.");
+        MessageUtils.sendMessage(sender, "<green>/vc reload - Recarga la configuración y los mensajes.");
+    }
+    @Default
+    @Description("Muestra la ayuda para los comandos de VoiceChat.")
+    public void onDefault(Player sender) {
+        MessageUtils.sendMessage(sender, "<green>Comandos disponibles:");
+        MessageUtils.sendMessage(sender, "<green>/vc mute <all|*> - Mutea el permiso de voz para el grupo por defecto.");
+        MessageUtils.sendMessage(sender, "<green>/vc unmute <all|*> - Desmutea el permiso de voz para el grupo por defecto.");
+        MessageUtils.sendMessage(sender, "<green>/vc reload - Recarga la configuración y los mensajes.");
     }
 }
