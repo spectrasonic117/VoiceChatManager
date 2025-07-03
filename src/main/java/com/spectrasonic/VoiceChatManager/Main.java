@@ -32,6 +32,13 @@ public final class Main extends JavaPlugin {
         configManager.loadConfig();
         messageManager.loadMessages();
 
+        // Setup default group permissions
+        if (luckPermsApi != null) {
+            new com.spectrasonic.VoiceChatManager.permissions.PermissionSetupManager(this, luckPermsApi).setupDefaultGroupPermissions();
+        } else {
+            getLogger().warning("LuckPerms API not available, skipping default group permission setup.");
+        }
+
         // Set Plugin in utils
         com.spectrasonic.Utils.CommandUtils.setPlugin(this);
 
