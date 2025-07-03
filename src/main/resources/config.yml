@@ -1,0 +1,5 @@
+messages:
+    mute-group-message: "<red>Jugadores Silenciados"
+    unmute-group-message: "<green>Jugadores con Permiso de Habla"
+    mute-player-message: "<red>Micrófono desactivado, escucha atentamente las instrucciones"
+    unmute-player-message: "<green>Ahora tienes permiso de hablar nuevamente, diviértete"

@@ -1,5 +1,16 @@
 name: VoiceChatManager
-version: '${version}'
+version: "${version}"
 main: com.spectrasonic.VoiceChatManager.Main
-api-version: '1.21'
+api-version: "1.21"
 authors: [Spectrasonic]
+depend: [LuckPerms, voicechat]
+
+commands:
+    vc:
+        description: Control de mute/unmute para grupo default de voicechat
+        usage: /vc <mute|unmute> <all|*>
+        permission: voicechat.manage
+permissions:
+    voicechat.manage:
+        description: Permiso para usar /vc mute/unmute
+        default: op
