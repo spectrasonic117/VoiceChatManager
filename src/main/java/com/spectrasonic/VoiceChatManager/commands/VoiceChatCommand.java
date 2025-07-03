@@ -9,7 +9,7 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
-// import net.luckperms.api.node.types.PermissionNode;
+import net.luckperms.api.node.NodeType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -59,7 +59,7 @@ public class VoiceChatCommand extends BaseCommand {
                 return;
             }
             // Clear old permission node from group
-            // group.data().clear(node -> node.hasPermission() && node.getPermission().equals(PERMISSION_NODE));
+            group.data().clear(node -> NodeType.PERMISSION.matches(node) && NodeType.PERMISSION.cast(node).getPermission().equals(PERMISSION_NODE));
             
             // Add new permission node with desired value
             Node nodeToUpdate = Node.builder(PERMISSION_NODE).value(setPermission).build();
