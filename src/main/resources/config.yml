@@ -1,5 +1,10 @@
 messages:
-    mute-group-message: "<red>Jugadores Silenciados"
-    unmute-group-message: "<green>Jugadores con Permiso de Habla"
-    mute-player-message: "<red>Micrófono desactivado, escucha atentamente las instrucciones"
-    unmute-player-message: "<green>Ahora tienes permiso de hablar nuevamente, diviértete"
+  mute-group-message: "<dark_gray><b>[<red>🎙x</red>]</b></dark_gray><white>Jugadores Silenciados</white>"
+  unmute-group-message: "<blue><b>[🎙]</b></blue><white>Jugadores con Permiso de Habla</white>"
+  mute-player-message: "<red><b>[✖]</b></red><white>Micrófono desactivado, escucha atentamente las instrucciones</white>"
+  unmute-player-message: "<green><b>[✔]</b></green><white>Ahora tienes permiso de hablar!</white>"
+  usage_message: "<red><b>[✖]</b></red><white>Uso incorrecto. El target debe ser 'all' o '*'.</white>"
+  group-not-found: "<red><b>[✖]</b></red><white>El grupo default no existe.</white>"
+  reload-message: "<green><b>[✔]</b></green><white>Config Reloaded</white>"
+
+    

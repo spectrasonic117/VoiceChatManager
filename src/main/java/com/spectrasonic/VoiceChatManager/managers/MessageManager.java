@@ -19,13 +19,18 @@ public class MessageManager {
         FileConfiguration config = plugin.getConfigManager().getConfig();
         messages.clear();
 
-        messages.put("mute-group-message", config.getString("messages.mute-group-message", "<red>Jugadores Sienciados"));
-        messages.put("unmute-group-message", config.getString("messages.unmute-group-message", "<green>Jugadores con Permiso de Habla"));
-        messages.put("mute-player-message", config.getString("messages.mute-player-message", "<red>Microfono desactivado, Escucha atentamente las instrucciones "));
-        messages.put("unmute-player-message", config.getString("messages.unmute-player-message", "<green>Ahora tienes permiso de hablar nuevamente, diviertete"));
+        if (config.contains("messages")) {
+            for (String key : config.getConfigurationSection("messages").getKeys(false)) {
+                messages.put(key, config.getString("messages." + key));
+            }
+        }
     }
 
     public String getMessage(String key) {
         return messages.getOrDefault(key, "");
+    }
+    
+    public boolean hasMessage(String key) {
+        return messages.containsKey(key);
     }
 }

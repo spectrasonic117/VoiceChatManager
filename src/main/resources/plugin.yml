@@ -8,9 +8,10 @@ depend: [LuckPerms, voicechat]
 commands:
     vc:
         description: Control de mute/unmute para grupo default de voicechat
-        usage: /vc <mute|unmute> <all|*>
-        permission: voicechat.manage
+        aliases: [vcm]
+        permission: voicechat.admin
+
 permissions:
-    voicechat.manage:
+    voicechat.admin:
         description: Permiso para usar /vc mute/unmute
         default: op

@@ -34,7 +34,7 @@ A Minecraft plugin for managing voice chat functionality on Paper Servers. Requi
 
 ### Permissions
 
--   `voicechat.manage` - Allows joining a voice chat channel.
+-   `voicechat.admin` - Allows joining a voice chat channel.
 
 ## Configuration
 

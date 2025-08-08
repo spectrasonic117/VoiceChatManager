@@ -13,10 +13,11 @@ import net.luckperms.api.node.NodeType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.Sound;
 
 import java.util.concurrent.CompletableFuture;
 
-@CommandAlias("vc")
+@CommandAlias("vc|vcm")
 public class VoiceChatCommand extends BaseCommand {
 
     private final Main plugin;
@@ -31,7 +32,7 @@ public class VoiceChatCommand extends BaseCommand {
     }
 
     @Subcommand("mute")
-    @CommandPermission("voicechat.manage")
+    @CommandPermission("voicechat.admin")
     @CommandCompletion("all|*")
     @Syntax("<target>")
     @Description("Mutea el permiso de voz para el grupo por defecto. Usa 'all' o '*' como objetivo.")
@@ -40,7 +41,7 @@ public class VoiceChatCommand extends BaseCommand {
     }
 
     @Subcommand("unmute")
-    @CommandPermission("voicechat.manage")
+    @CommandPermission("voicechat.admin")
     @CommandCompletion("all|*")
     @Syntax("<target>")
     @Description("Desmutea el permiso de voz para el grupo por defecto. Usa 'all' o '*' como objetivo.")
@@ -52,57 +53,59 @@ public class VoiceChatCommand extends BaseCommand {
         target = target.toLowerCase();
 
         if (!target.equals("all") && !target.equals("*")) {
-            MessageUtils.sendMessage(sender, "<red>Uso incorrecto. El target debe ser 'all' o '*'.");
+            String usagemsgkey = "usage_message";
+            MessageUtils.sendMessage(sender, plugin.getMessageManager().getMessage(usagemsgkey));
             return;
         }
 
         boolean setPermission = action.equals("unmute");
-        MessageUtils.sendConsoleMessage("Ejecutando comando " + action + " para grupo default");
 
         CompletableFuture<Group> groupFuture = CompletableFuture.supplyAsync(() -> luckPerms.getGroupManager().getGroup(TARGET_GROUP));
 
         groupFuture.thenAcceptAsync(group -> {
             if (group == null) {
-                MessageUtils.sendMessage(sender, "<red>El grupo default no existe.");
+                String groupNotFoundKey = "group-not-found";
+                MessageUtils.sendMessage(sender, plugin.getMessageManager().getMessage(groupNotFoundKey));
                 return;
             }
-            // Clear old permission node from group
             group.data().clear(node -> NodeType.PERMISSION.matches(node) && NodeType.PERMISSION.cast(node).getPermission().equals(PERMISSION_NODE));
             
-            // Add new permission node with desired value
             Node nodeToUpdate = Node.builder(PERMISSION_NODE).value(setPermission).build();
             group.data().add(nodeToUpdate);
 
             luckPerms.getGroupManager().saveGroup(group);
 
-            // Notify command sender group operation complete
             String groupMessageKey = setPermission ? "unmute-group-message" : "mute-group-message";
             MessageUtils.sendMessage(sender, plugin.getMessageManager().getMessage(groupMessageKey));
 
-            // Send to players in group default
             Bukkit.getOnlinePlayers().stream().filter(p -> isInDefaultGroup(p)).forEach(p -> {
                 String playerMsgKey = setPermission ? "unmute-player-message" : "mute-player-message";
                 MessageUtils.sendMessage(p, plugin.getMessageManager().getMessage(playerMsgKey));
-                SoundUtils.playerSound(p, org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
+                
+                if (setPermission) {
+                    SoundUtils.playerSound(p, Sound.BLOCK_NOTE_BLOCK_BELL, 1f, 1f);
+                } else {
+                    SoundUtils.playerSound(p, Sound.BLOCK_BEACON_DEACTIVATE, 1f, 1f);
+                }
             });
         });
     }
 
     private boolean isInDefaultGroup(Player player) {
-        User user = luckPerms.getPlayerAdapter(org.bukkit.entity.Player.class).getUser(player);
+        User user = luckPerms.getPlayerAdapter(Player.class).getUser(player);
         if (user == null) return false; // Defensive
 
         return user.getInheritedGroups(user.getQueryOptions()).stream()
                 .anyMatch(g -> g.getName().equalsIgnoreCase(TARGET_GROUP));
     }
 
-    // Comando para recargar config y mensajes
     @Subcommand("reload")
-    @CommandPermission("voicechat.manage")
+    @CommandPermission("voicechat.admin")
     public void onReload(Player player) {
         plugin.getConfigManager().loadConfig();
         plugin.getMessageManager().loadMessages();
-        MessageUtils.sendMessage(player, "<green>Configuración Recargada.");
+        String reloadMessage = plugin.getMessageManager().getMessage("reload-message");
+        MessageUtils.sendMessage(player, reloadMessage);
     }
 @Subcommand("help")
     @Description("Muestra la ayuda para los comandos de VoiceChat.")

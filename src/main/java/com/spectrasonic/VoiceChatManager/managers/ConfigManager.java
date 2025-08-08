@@ -13,6 +13,7 @@ public class ConfigManager {
 
     public void loadConfig() {
         plugin.saveDefaultConfig();
+        plugin.reloadConfig();
     }
 
     public FileConfiguration getConfig() {
